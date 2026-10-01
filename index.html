@@ -1,0 +1,797 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>T20 World Cup 2021 | Ultimate Experience</title>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', 'Segoe UI', sans-serif; }
+
+        body {
+            background: #0f172a; /* Balanced Dark Theme */
+            color: #f1f5f9;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* ================= HEADER ================= */
+        header {
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid #334155;
+            padding: 20px 50px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .logo {
+            font-size: 28px;
+            font-weight: 900;
+            letter-spacing: 1px;
+            background: linear-gradient(45deg, #f97316, #fb923c);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .logo span { color: #10b981; -webkit-text-fill-color: #10b981; }
+
+        nav { display: flex; align-items: center; gap: 12px; }
+        nav a {
+            color: #94a3b8; text-decoration: none; padding: 10px 20px;
+            border-radius: 30px; transition: all 0.3s ease; cursor: pointer;
+            font-weight: 600; font-size: 14px;
+        }
+        nav a:hover { color: #f1f5f9; background: rgba(255, 255, 255, 0.05); }
+        nav a.active {
+            background: linear-gradient(135deg, #f97316, #ea580c);
+            color: white; box-shadow: 0 4px 15px rgba(249, 115, 22, 0.3);
+        }
+
+        /* ================= PAGE SYSTEM ================= */
+        .page-section {
+            display: none; min-height: calc(100vh - 85px);
+            animation: fadeIn 0.5s ease forwards;
+        }
+        .page-section.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* ================= HERO ================= */
+        .hero {
+            min-height: calc(100vh - 85px);
+            background: linear-gradient(135deg, rgba(15, 23, 42, 0.85), rgba(15, 23, 42, 0.95)), 
+                        url('https://i.pinimg.com/736x/d4/57/47/d457474b6869abaf87b25870c2f68df5.jpg') no-repeat center center/cover;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            text-align: center; padding: 50px;
+        }
+        .hero h1 {
+            font-size: 64px; margin-bottom: 20px; font-weight: 900;
+            background: linear-gradient(135deg, #f97316, #10b981);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+        .hero p { font-size: 20px; color: #cbd5e1; margin-bottom: 35px; max-width: 700px; line-height: 1.6; }
+        .hero-button {
+            display: inline-block; background: linear-gradient(135deg, #10b981, #0ea5e9);
+            color: white; padding: 16px 36px; border-radius: 35px; text-decoration: none;
+            font-weight: 700; cursor: pointer; box-shadow: 0 10px 30px rgba(16, 185, 129, 0.3);
+            transition: all 0.3s ease; border: none; font-size: 16px;
+        }
+        .hero-button:hover { transform: translateY(-3px); box-shadow: 0 15px 40px rgba(16, 185, 129, 0.4); }
+
+        /* ================= DETAILS BANNER ================= */
+        .details-banner {
+            height: 350px;
+            background: linear-gradient(135deg, rgba(15, 23, 42, 0.8), rgba(15, 23, 42, 0.95)), 
+                        url('https://i.pinimg.com/736x/d4/57/47/d457474b6869abaf87b25870c2f68df5.jpg') no-repeat center center/cover;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            text-align: center; margin-bottom: 40px; border-bottom: 1px solid #334155;
+        }
+        .details-banner h2 {
+            font-size: 48px; font-weight: 900;
+            background: linear-gradient(135deg, #f97316, #10b981);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 10px;
+        }
+        .details-banner p { color: #94a3b8; font-size: 18px; font-weight: 500; }
+
+        /* ================= CONTENT SECTIONS ================= */
+        .content { padding: 20px 50px 70px; max-width: 1250px; margin: auto; }
+        .section-title { text-align: center; margin-bottom: 40px; }
+        .section-title h2 { font-size: 36px; margin-bottom: 12px; font-weight: 800; color: #f1f5f9; }
+        .section-title p { color: #94a3b8; font-size: 16px; }
+
+        .grid-base { display: grid; gap: 25px; margin-bottom: 70px; }
+        .grid-5 { grid-template-columns: repeat(5, 1fr); }
+        .grid-4 { grid-template-columns: repeat(4, 1fr); }
+        .grid-3 { grid-template-columns: repeat(3, 1fr); }
+        .grid-2 { grid-template-columns: repeat(2, 1fr); }
+
+        .card-base {
+            background: #1e293b; padding: 30px; border-radius: 20px;
+            border: 1px solid #334155; box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+        }
+        .card-base:hover { transform: translateY(-6px); border-color: #f97316; box-shadow: 0 12px 30px rgba(249, 115, 22, 0.15); }
+
+        /* Teams & Likes */
+        .team-card { text-align: center; position: relative; }
+        .flag-container { display: flex; flex-direction: column; align-items: center; gap: 15px; margin-bottom: 15px; }
+        .team-flag-img {
+            width: 70px; height: 70px; border-radius: 50%; object-fit: cover;
+            border: 3px solid #334155; box-shadow: 0 4px 10px rgba(0,0,0,0.3); transition: all 0.3s ease;
+        }
+        .team-card:hover .team-flag-img { border-color: #10b981; transform: scale(1.1); }
+        .team-card h3 { color: #f1f5f9; font-size: 18px; font-weight: 700; margin-bottom: 15px; }
+        
+        .like-btn {
+            background: rgba(239, 68, 68, 0.1); border: 1px solid #ef4444; color: #ef4444;
+            padding: 8px 20px; border-radius: 20px; cursor: pointer; font-weight: 700;
+            font-size: 14px; transition: all 0.3s ease; display: flex; align-items: center; gap: 6px; margin: 0 auto;
+        }
+        .like-btn:hover { background: #ef4444; color: white; transform: scale(1.05); }
+        .like-btn.liked { background: #ef4444; color: white; }
+
+        /* Matches & Players */
+        .match-card h3 { color: #f97316; margin-bottom: 18px; font-size: 20px; font-weight: 700; }
+        .match-card p { color: #94a3b8; margin: 10px 0; font-size: 14px; }
+        .result {
+            display: inline-block; margin-top: 15px; background: rgba(16, 185, 129, 0.15);
+            color: #10b981; padding: 8px 16px; border-radius: 10px; font-weight: 700; font-size: 13px;
+        }
+        .player-badge-card { display: flex; align-items: center; gap: 25px; position: relative; overflow: hidden; }
+        .player-badge-card::before {
+            content: ''; position: absolute; top: 0; left: 0; width: 6px; height: 100%;
+            background: linear-gradient(to bottom, #f97316, #fb923c);
+        }
+        .player-avatar-img {
+            width: 100px; height: 100px; border-radius: 50%; object-fit: cover;
+            border: 4px solid #f97316; box-shadow: 0 8px 20px rgba(249, 115, 22, 0.3); flex-shrink: 0;
+        }
+        .player-info h3 { font-size: 22px; color: #f1f5f9; margin-bottom: 4px; font-weight: 700; }
+        .player-info .team-tag {
+            color: #10b981; font-size: 12px; font-weight: 700; text-transform: uppercase;
+            letter-spacing: 1px; margin-bottom: 10px; display: inline-block;
+            background: rgba(16, 185, 129, 0.1); padding: 4px 12px; border-radius: 20px;
+        }
+        .player-stats-row { display: flex; gap: 15px; }
+        .stat-badge { background: #0f172a; padding: 8px 16px; border-radius: 10px; border: 1px solid #334155; }
+        .stat-badge span { display: block; font-size: 11px; color: #94a3b8; font-weight: 600; }
+        .stat-badge strong { font-size: 16px; color: #f97316; font-weight: 700; }
+
+        .stat-card { text-align: center; }
+        .stat-card h3 { color: #94a3b8; margin-bottom: 15px; font-size: 14px; text-transform: uppercase; letter-spacing: 1.5px; font-weight: 600; }
+        .stat-card .number {
+            font-size: 28px; font-weight: 900;
+            background: linear-gradient(135deg, #10b981, #0ea5e9);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+
+        /* ================= USABILITY TRACKER ================= */
+        .tracker-page { background: #0f172a; padding: 60px 50px; }
+        .tracker-header { text-align: center; margin-bottom: 40px; }
+        .tracker-header h2 {
+            font-size: 40px; margin-bottom: 10px; font-weight: 900;
+            background: linear-gradient(135deg, #10b981, #0ea5e9);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+        .tracker-header p { color: #94a3b8; font-size: 16px; }
+
+        .tracker-grid {
+            max-width: 1250px; margin: auto; display: grid;
+            grid-template-columns: repeat(3, 1fr); gap: 25px; margin-bottom: 30px;
+        }
+        .tracker-card {
+            background: #1e293b; padding: 30px; border-radius: 20px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); border: 1px solid #334155;
+            border-left: 6px solid #10b981; transition: transform 0.3s ease;
+        }
+        .tracker-card:hover { transform: translateY(-5px); box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3); }
+        .tracker-card h3 { color: #94a3b8; font-size: 13px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; font-weight: 600; }
+        .tracker-value { font-size: 34px; font-weight: 900; color: #f1f5f9; }
+        .highlight-value { color: #fbbf24 !important; text-shadow: 0 0 15px rgba(251, 191, 36, 0.3); }
+        .danger-value { color: #ef4444 !important; }
+        .success-value { color: #10b981 !important; }
+
+        .activity-box {
+            max-width: 1250px; margin: 0 auto 30px; background: #1e293b;
+            padding: 30px; border-radius: 20px; border: 1px solid #334155;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+        .activity-box h3 { margin-bottom: 20px; color: #f1f5f9; font-size: 20px; display: flex; align-items: center; gap: 10px; font-weight: 700; }
+        #activityLog { max-height: 240px; overflow-y: auto; padding-right: 5px; }
+        .activity-item {
+            padding: 14px; border-bottom: 1px solid #334155; color: #cbd5e1;
+            font-size: 14px; font-family: 'Courier New', monospace; animation: fadeIn 0.3s ease;
+        }
+
+        .tracker-buttons { display: flex; justify-content: center; gap: 20px; margin-bottom: 40px; }
+        .tracker-btn {
+            border: none; padding: 16px 32px; border-radius: 14px; cursor: pointer;
+            font-size: 16px; font-weight: 700; transition: all 0.3s ease;
+        }
+        .heatmap-btn {
+            background: linear-gradient(135deg, #ef4444, #f97316); color: white;
+            box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);
+        }
+        .heatmap-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(239, 68, 68, 0.4); }
+        .reset-btn {
+            background: linear-gradient(135deg, #475569, #334155); color: white;
+            box-shadow: 0 4px 15px rgba(71, 85, 105, 0.3);
+        }
+        .reset-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(71, 85, 105, 0.4); }
+
+        /* ================= PIE CHART ================= */
+        .pie-chart-container {
+            max-width: 1250px; margin: 0 auto 40px; background: #1e293b;
+            padding: 30px; border-radius: 20px; border: 1px solid #334155;
+            display: flex; align-items: center; justify-content: space-around; flex-wrap: wrap; gap: 30px;
+        }
+        .pie-chart-container h3 { width: 100%; text-align: center; color: #f1f5f9; font-size: 22px; margin-bottom: 10px; }
+        #pieCanvas { border-radius: 50%; box-shadow: 0 0 30px rgba(0,0,0,0.3); }
+        .pie-legend { display: flex; flex-direction: column; gap: 12px; }
+        .legend-item { display: flex; align-items: center; gap: 10px; color: #cbd5e1; font-size: 14px; font-weight: 600; }
+        .legend-color { width: 16px; height: 16px; border-radius: 4px; }
+
+        /* ================= HEATMAP OVERLAY ================= */
+        #heatmapOverlay {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            pointer-events: none; z-index: 9998; display: none;
+        }
+        .heatmap-hint {
+            position: fixed; bottom: 30px; right: 30px; background: #ef4444; color: white;
+            padding: 12px 24px; border-radius: 30px; font-weight: 700; z-index: 9999;
+            box-shadow: 0 4px 15px rgba(239, 68, 68, 0.4); animation: pulse 2s infinite;
+            display: none; cursor: pointer;
+        }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
+
+        /* FLOATING CLICK */
+        .floating-click {
+            position: fixed; pointer-events: none; font-weight: 900; font-size: 18px;
+            color: #10b981; z-index: 9999; animation: floatUp 1s ease-out forwards;
+            text-shadow: 0 0 10px rgba(16, 185, 129, 0.6);
+        }
+        @keyframes floatUp { 0% { opacity: 1; transform: translateY(0) scale(1); } 100% { opacity: 0; transform: translateY(-50px) scale(1.5); } }
+
+        footer {
+            background: #020617; color: #64748b; text-align: center; padding: 35px;
+            border-top: 1px solid #1e293b; font-size: 15px; font-weight: 500;
+        }
+        footer span { color: #f97316; font-weight: 700; }
+
+        @media (max-width: 1000px) {
+            header { padding: 18px 25px; }
+            .grid-5, .grid-4, .grid-3, .tracker-grid { grid-template-columns: repeat(2, 1fr); }
+            .grid-2 { grid-template-columns: 1fr; }
+            .hero h1 { font-size: 42px; }
+            .details-banner { height: 250px; }
+            .details-banner h2 { font-size: 36px; }
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <div class="logo">T20 <span>WORLD CUP</span> 2021</div>
+    <nav>
+        <a href="#" class="nav-link active" data-page="home">Home</a>
+        <a href="#" class="nav-link" data-page="details">Details</a>
+        <a href="#" class="nav-link tracker-nav" data-page="usability-tracker">Usability Tracker</a>
+    </nav>
+</header>
+
+<!-- HOME PAGE -->
+<section id="home" class="page-section active">
+    <div class="hero">
+        <h1>T20 World Cup 2021</h1>
+        <p>Relive Australia's historic championship triumph and the most electrifying T20 tournament ever hosted in UAE and Oman.</p>
+        <button class="hero-button" onclick="showPage('details')">Explore Tournament</button>
+    </div>
+    <div class="content">
+        <div class="section-title"><h2>Tournament Overview</h2><p>Quick facts about the 2021 edition</p></div>
+        <div class="grid-base grid-5">
+            <div class="card-base" style="text-align:center"><h3 style="font-size:36px;color:#10b981;font-weight:800">16</h3><p style="color:#94a3b8;font-weight:600">Teams</p></div>
+            <div class="card-base" style="text-align:center"><h3 style="font-size:36px;color:#10b981;font-weight:800">45</h3><p style="color:#94a3b8;font-weight:600">Matches</p></div>
+            <div class="card-base" style="text-align:center"><h3 style="font-size:36px;color:#10b981;font-weight:800">2021</h3><p style="color:#94a3b8;font-weight:600">Year</p></div>
+            <div class="card-base" style="text-align:center"><h3 style="font-size:36px;color:#10b981;font-weight:800">UAE & Oman</h3><p style="color:#94a3b8;font-weight:600">Hosts</p></div>
+            <div class="card-base" style="text-align:center"><h3 style="font-size:36px;color:#10b981;font-weight:800">AUS</h3><p style="color:#94a3b8;font-weight:600">Champions</p></div>
+        </div>
+    </div>
+</section>
+
+<!-- DETAILS PAGE -->
+<section id="details" class="page-section">
+    <div class="details-banner">
+        <h2>Tournament Details</h2>
+        <p>Teams, Matches, Players & Records</p>
+    </div>
+    <div class="content">
+        <div class="section-title"><h2>Participating Teams</h2><p>Click 'Like' on your favorite team!</p></div>
+        <div class="grid-base grid-4">
+            <div class="card-base team-card">
+                <div class="flag-container">
+                    <img src="https://i.pinimg.com/736x/05/99/77/059977c559769cf62dd7f04611855674.jpg" class="team-flag-img" onerror="this.src='https://via.placeholder.com/70?text=PAK'">
+                    <h3>Pakistan</h3>
+                </div>
+                <button class="like-btn" onclick="likeTeam('Pakistan', event)">❤️ <span class="like-count">0</span> Likes</button>
+            </div>
+            <div class="card-base team-card">
+                <div class="flag-container">
+                    <img src="https://i.pinimg.com/1200x/ac/44/1a/ac441af376ad56700e29b02b67edc0ed.jpg" class="team-flag-img" onerror="this.src='https://via.placeholder.com/70?text=IND'">
+                    <h3>India</h3>
+                </div>
+                <button class="like-btn" onclick="likeTeam('India', event)">❤️ <span class="like-count">0</span> Likes</button>
+            </div>
+            <div class="card-base team-card">
+                <div class="flag-container">
+                    <img src="https://i.pinimg.com/736x/9d/0d/15/9d0d15daa44b7acf62718542c35441c3.jpg" class="team-flag-img" onerror="this.src='https://via.placeholder.com/70?text=AUS'">
+                    <h3>Australia</h3>
+                </div>
+                <button class="like-btn" onclick="likeTeam('Australia', event)">❤️ <span class="like-count">0</span> Likes</button>
+            </div>
+            <div class="card-base team-card">
+                <div class="flag-container">
+                    <img src="https://i.pinimg.com/1200x/93/5f/bf/935fbf103146ee0a7f8117ec6a2892c9.jpg" class="team-flag-img" onerror="this.src='https://via.placeholder.com/70?text=ENG'">
+                    <h3>England</h3>
+                </div>
+                <button class="like-btn" onclick="likeTeam('England', event)">❤️ <span class="like-count">0</span> Likes</button>
+            </div>
+            <div class="card-base team-card">
+                <div class="flag-container">
+                    <img src="https://i.pinimg.com/1200x/b4/72/51/b47251a51c6e125e9078f920d0174de6.jpg" class="team-flag-img" onerror="this.src='https://via.placeholder.com/70?text=NZ'">
+                    <h3>New Zealand</h3>
+                </div>
+                <button class="like-btn" onclick="likeTeam('New Zealand', event)">❤️ <span class="like-count">0</span> Likes</button>
+            </div>
+            <div class="card-base team-card">
+                <div class="flag-container">
+                    <img src="https://i.pinimg.com/736x/fe/08/2a/fe082a4c45845d6bd7898f30b51366f8.jpg" class="team-flag-img" onerror="this.src='https://via.placeholder.com/70?text=SA'">
+                    <h3>South Africa</h3>
+                </div>
+                <button class="like-btn" onclick="likeTeam('South Africa', event)">❤️ <span class="like-count">0</span> Likes</button>
+            </div>
+            <div class="card-base team-card">
+                <div class="flag-container">
+                    <img src="https://i.pinimg.com/736x/fe/e9/ee/fee9ee38a28609bfb697d3ee2854b840.jpg" class="team-flag-img" onerror="this.src='https://via.placeholder.com/70?text=SL'">
+                    <h3>Sri Lanka</h3>
+                </div>
+                <button class="like-btn" onclick="likeTeam('Sri Lanka', event)">❤️ <span class="like-count">0</span> Likes</button>
+            </div>
+            <div class="card-base team-card">
+                <div class="flag-container">
+                    <img src="https://i.pinimg.com/736x/6c/73/a7/6c73a76f63284628f912c95dbe735781.jpg" class="team-flag-img" onerror="this.src='https://via.placeholder.com/70?text=BAN'">
+                    <h3>Bangladesh</h3>
+                </div>
+                <button class="like-btn" onclick="likeTeam('Bangladesh', event)">❤️ <span class="like-count">0</span> Likes</button>
+            </div>
+        </div>
+
+        <div class="section-title"><h2>Featured Matches</h2><p>Unforgettable encounters from the tournament</p></div>
+        <div class="grid-base grid-3">
+            <div class="card-base match-card">
+                <h3>🇵🇰 Pakistan vs India 🇮🇳</h3>
+                <p><strong>Date:</strong> 24 October 2021</p>
+                <p><strong>Venue:</strong> Dubai International Stadium</p>
+                <p><strong>Result:</strong> Pakistan won by 10 wickets</p>
+                <span class="result">Pakistan Won</span>
+            </div>
+            <div class="card-base match-card">
+                <h3>🇦🇺 Australia vs New Zealand 🇳🇿</h3>
+                <p><strong>Date:</strong> 14 November 2021</p>
+                <p><strong>Venue:</strong> Dubai International Stadium</p>
+                <p><strong>Result:</strong> Australia won by 8 wickets</p>
+                <span class="result">Australia Won (Final)</span>
+            </div>
+            <div class="card-base match-card">
+                <h3>🏴󠁧󠁢󠁥󠁮󠁧󠁿 England vs New Zealand 🇳🇿</h3>
+                <p><strong>Date:</strong> 10 November 2021</p>
+                <p><strong>Venue:</strong> Abu Dhabi</p>
+                <p><strong>Result:</strong> New Zealand won by 5 wickets</p>
+                <span class="result">New Zealand Won</span>
+            </div>
+        </div>
+
+        <div class="section-title"><h2>Star Players</h2><p>Top performers who lit up the tournament</p></div>
+        <div class="grid-base grid-2">
+            <div class="card-base player-badge-card">
+                <img src="https://i.pinimg.com/736x/62/bb/22/62bb22054d3fc12c799050ed98a4aaa1.jpg" alt="Babar Azam" class="player-avatar-img" onerror="this.src='https://via.placeholder.com/100?text=Babar'">
+                <div class="player-info">
+                    <h3>Babar Azam</h3>
+                    <span class="team-tag">🇵🇰 Pakistan • Batter</span>
+                    <div class="player-stats-row">
+                        <div class="stat-badge"><span>Runs</span><strong>303</strong></div>
+                        <div class="stat-badge"><span>Avg</span><strong>75.75</strong></div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-base player-badge-card">
+                <img src="https://i.pinimg.com/1200x/13/1d/c3/131dc32a2c9210ae62cfc0e42968f492.jpg" alt="Mohammad Rizwan" class="player-avatar-img" onerror="this.src='https://via.placeholder.com/100?text=Rizwan'">
+                <div class="player-info">
+                    <h3>Mohammad Rizwan</h3>
+                    <span class="team-tag">🇵🇰 Pakistan • WK</span>
+                    <div class="player-stats-row">
+                        <div class="stat-badge"><span>Runs</span><strong>281</strong></div>
+                        <div class="stat-badge"><span>Avg</span><strong>70.25</strong></div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-base player-badge-card">
+                <img src="https://i.pinimg.com/736x/7b/5c/00/7b5c008f1248d456f0661e41acf0036b.jpg" alt="David Warner" class="player-avatar-img" onerror="this.src='https://via.placeholder.com/100?text=Warner'">
+                <div class="player-info">
+                    <h3>David Warner</h3>
+                    <span class="team-tag">🇦🇺 Australia • Batter</span>
+                    <div class="player-stats-row">
+                        <div class="stat-badge"><span>Runs</span><strong>289</strong></div>
+                        <div class="stat-badge"><span>Avg</span><strong>48.16</strong></div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-base player-badge-card">
+                <img src="https://i.pinimg.com/736x/cd/e9/e1/cde9e172e0bb54b2b018f8858fbb0414.jpg" alt="Adam Zampa" class="player-avatar-img" onerror="this.src='https://via.placeholder.com/100?text=Zampa'">
+                <div class="player-info">
+                    <h3>Adam Zampa</h3>
+                    <span class="team-tag">🇦🇺 Australia • Bowler</span>
+                    <div class="player-stats-row">
+                        <div class="stat-badge"><span>Wickets</span><strong>13</strong></div>
+                        <div class="stat-badge"><span>Econ</span><strong>6.50</strong></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section-title"><h2>Tournament Records</h2><p>The ultimate achievers of the championship</p></div>
+        <div class="grid-base grid-3">
+            <div class="card-base stat-card"><h3>🏏 Highest Run Scorer</h3><div class="number">Babar Azam (303)</div></div>
+            <div class="card-base stat-card"><h3>🎯 Highest Wicket Taker</h3><div class="number">Adam Zampa (13)</div></div>
+            <div class="card-base stat-card"><h3>🏆 Champion</h3><div class="number">Australia</div></div>
+        </div>
+    </div>
+</section>
+
+<!-- USABILITY TRACKER PAGE -->
+<section id="usability-tracker" class="page-section">
+    <div class="tracker-page">
+        <div class="tracker-header">
+            <h2>📊 Advanced Usability Tracker</h2>
+            <p>Real-time user behavior, engagement, and preference analytics</p>
+        </div>
+
+        <div class="tracker-grid">
+            <div class="tracker-card"><h3>Page Views</h3><div class="tracker-value" id="pageViews">Home: 1 | Details: 0 | Tracker: 0</div></div>
+            <div class="tracker-card"><h3>Session Duration</h3><div class="tracker-value" id="sessionDuration">0s</div></div>
+            <div class="tracker-card"><h3>Total Clicks</h3><div class="tracker-value" id="totalClicks">0</div></div>
+            <div class="tracker-card"><h3>Bounce Rate</h3><div class="tracker-value danger-value" id="bounceRate">100%</div></div>
+            <div class="tracker-card"><h3>Usability Score</h3><div class="tracker-value highlight-value" id="usabilityScore">50/100</div></div>
+            <div class="tracker-card"><h3>Top Element</h3><div class="tracker-value" id="topElement" style="font-size: 20px;">None</div></div>
+        </div>
+
+        <!-- PIE CHART FOR TEAM LIKES -->
+        <div class="pie-chart-container">
+            <h3>🏆 Team Preference Pie Chart</h3>
+            <canvas id="pieCanvas" width="300" height="300"></canvas>
+            <div class="pie-legend" id="pieLegend">
+                <div class="legend-item" style="color: #94a3b8;">No likes recorded yet. Go to Details and like a team!</div>
+            </div>
+        </div>
+
+        <div class="activity-box">
+            <h3>🎙️ User Activity Log</h3>
+            <div id="activityLog">
+                <div class="activity-item">🏟️ Session started. Tracker initialized.</div>
+            </div>
+        </div>
+
+        <div class="tracker-buttons">
+            <button class="tracker-btn heatmap-btn" id="toggleHeatmapBtn" type="button">🔥 Toggle Click Heatmap</button>
+            <button class="tracker-btn reset-btn" id="resetTrackerBtn" type="button">↻ Reset Tracker</button>
+        </div>
+    </div>
+</section>
+
+<!-- HEATMAP OVERLAY CANVAS -->
+<canvas id="heatmapOverlay"></canvas>
+<div class="heatmap-hint" id="heatmapHint" onclick="toggleHeatmap()">Click anywhere to hide Heatmap</div>
+
+<footer>
+    <p>T20 World Cup 2021 &copy; 2026 | Australia Champions Edition 🏆</p>
+</footer>
+
+<script>
+// ================= STATE VARIABLES =================
+let totalClicks = 0;
+let clickedElementsCount = {};
+let startTime = Date.now();
+let currentPage = "home";
+let clickCoordinates = [];
+let isHeatmapActive = false;
+let hasInteracted = false; // For Bounce Rate
+
+let pageViews = { home: 1, details: 0, tracker: 0 };
+let teamLikes = {
+    'Pakistan': 0, 'India': 0, 'Australia': 0, 'England': 0,
+    'New Zealand': 0, 'South Africa': 0, 'Sri Lanka': 0, 'Bangladesh': 0
+};
+
+const teamColors = {
+    'Pakistan': '#10b981', 'India': '#3b82f6', 'Australia': '#fbbf24', 'England': '#ef4444',
+    'New Zealand': '#1e293b', 'South Africa': '#84cc16', 'Sri Lanka': '#0ea5e9', 'Bangladesh': '#22c55e'
+};
+
+// ================= NAVIGATION =================
+const navLinks = document.querySelectorAll(".nav-link");
+const pageLinks = document.querySelectorAll("[data-page]");
+
+pageLinks.forEach(link => {
+    link.addEventListener("click", function(event) {
+        event.preventDefault();
+        showPage(link.getAttribute("data-page"));
+    });
+});
+
+function showPage(pageId) {
+    document.querySelectorAll(".page-section").forEach(page => page.classList.remove("active"));
+    document.getElementById(pageId).classList.add("active");
+    
+    navLinks.forEach(link => {
+        link.classList.remove("active");
+        if (link.getAttribute("data-page") === pageId) link.classList.add("active");
+    });
+
+    currentPage = pageId;
+    pageViews[pageId]++;
+    updatePageViewsDisplay();
+    window.scrollTo({ top: 0, behavior: "smooth" });
+    
+    registerInteraction(`Navigated to ${pageId.toUpperCase()} page`);
+    calculateUsabilityScore();
+    if (isHeatmapActive) toggleHeatmap(); // Hide heatmap on nav
+}
+
+function updatePageViewsDisplay() {
+    document.getElementById("pageViews").textContent = `Home: ${pageViews.home} | Details: ${pageViews.details} | Tracker: ${pageViews.tracker}`;
+}
+
+// ================= INTERACTION & TRACKING =================
+function registerInteraction(action) {
+    if (!hasInteracted) {
+        hasInteracted = true;
+        document.getElementById("bounceRate").textContent = "0%";
+        document.getElementById("bounceRate").className = "tracker-value success-value";
+    }
+    
+    const activityLog = document.getElementById("activityLog");
+    const activity = document.createElement("div");
+    activity.className = "activity-item";
+    activity.textContent = `[${new Date().toLocaleTimeString()}] ${action}`;
+    activityLog.prepend(activity);
+    if (activityLog.children.length > 30) activityLog.removeChild(activityLog.lastChild);
+    
+    calculateUsabilityScore();
+}
+
+document.addEventListener("click", function(event) {
+    if (event.target.id === "heatmapOverlay" || event.target.id === "heatmapHint" || event.target.id === "toggleHeatmapBtn" || event.target.id === "resetTrackerBtn" || event.target.classList.contains("like-btn")) {
+        // Special handling for like-btn is in likeTeam(), but we still want to count it as a click
+        if(event.target.classList.contains("like-btn")) {
+            totalClicks++;
+            document.getElementById("totalClicks").textContent = totalClicks;
+        }
+        return;
+    }
+
+    totalClicks++;
+    document.getElementById("totalClicks").textContent = totalClicks;
+
+    let elementName = event.target.innerText?.trim().substring(0, 20) || event.target.tagName;
+    clickedElementsCount[elementName] = (clickedElementsCount[elementName] || 0) + 1;
+    
+    let top = "None", max = 0;
+    for (let el in clickedElementsCount) {
+        if (clickedElementsCount[el] > max) { max = clickedElementsCount[el]; top = el; }
+    }
+    document.getElementById("topElement").textContent = `"${top}" (${max})`;
+
+    // Heatmap coordinate (using clientX/Y for fixed viewport canvas)
+    clickCoordinates.push({ x: event.clientX, y: event.clientY });
+
+    // Floating effect
+    const floatEl = document.createElement("div");
+    floatEl.className = "floating-click";
+    floatEl.textContent = "+1 🔥";
+    floatEl.style.left = event.clientX + "px";
+    floatEl.style.top = event.clientY + "px";
+    document.body.appendChild(floatEl);
+    setTimeout(() => floatEl.remove(), 1000);
+
+    registerInteraction(`Clicked on: [${elementName}]`);
+});
+
+// Scroll interaction for bounce rate
+window.addEventListener("scroll", function() {
+    if (!hasInteracted) {
+        hasInteracted = true;
+        document.getElementById("bounceRate").textContent = "0%";
+        document.getElementById("bounceRate").className = "tracker-value success-value";
+        registerInteraction("User scrolled the page (Bounce prevented)");
+    }
+});
+
+// Session Duration
+setInterval(function() {
+    const seconds = Math.floor((Date.now() - startTime) / 1000);
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    document.getElementById("sessionDuration").textContent = `${mins}m ${secs}s`;
+}, 1000);
+
+// ================= USABILITY SCORE CALCULATOR =================
+function calculateUsabilityScore() {
+    let score = 50; // Base score
+    if (pageViews.home > 0 && pageViews.details > 0) score += 10; // Explored multiple pages
+    if (totalClicks >= 5) score += 10; // Active clicking
+    if (hasInteracted) score += 10; // Didn't bounce
+    if (Object.values(teamLikes).some(likes => likes > 0)) score += 10; // Engaged with likes
+    if (score > 100) score = 100;
+    
+    const scoreEl = document.getElementById("usabilityScore");
+    scoreEl.textContent = `${score}/100`;
+    scoreEl.style.color = score >= 80 ? '#10b981' : (score >= 60 ? '#fbbf24' : '#ef4444');
+}
+
+// ================= TEAM LIKE SYSTEM & PIE CHART =================
+function likeTeam(team, event) {
+    event.stopPropagation(); // Prevent generic click tracking from overriding
+    teamLikes[team]++;
+    
+    // Update button UI
+    const btn = event.target.closest('.like-btn');
+    btn.classList.add('liked');
+    btn.querySelector('.like-count').textContent = teamLikes[team];
+    
+    registerInteraction(`❤️ Liked team: ${team}`);
+    updatePieChart();
+    calculateUsabilityScore();
+    
+    // Mini confetti on like
+    confetti({ particleCount: 30, spread: 50, origin: { y: 0.7 }, colors: ['#ef4444', '#fbbf24'] });
+}
+
+function updatePieChart() {
+    const canvas = document.getElementById("pieCanvas");
+    const ctx = canvas.getContext("2d");
+    const legend = document.getElementById("pieLegend");
+    
+    const totalLikes = Object.values(teamLikes).reduce((a, b) => a + b, 0);
+    
+    if (totalLikes === 0) {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = "#334155";
+        ctx.beginPath();
+        ctx.arc(150, 150, 140, 0, 2 * Math.PI);
+        ctx.fill();
+        ctx.fillStyle = "#94a3b8";
+        ctx.font = "16px Poppins";
+        ctx.textAlign = "center";
+        ctx.fillText("No Likes Yet", 150, 155);
+        legend.innerHTML = '<div class="legend-item" style="color: #94a3b8;">Go to Details and like a team!</div>';
+        return;
+    }
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    let currentAngle = -0.5 * Math.PI; // Start at top
+    legend.innerHTML = "";
+
+    for (const [team, likes] of Object.entries(teamLikes)) {
+        if (likes > 0) {
+            const sliceAngle = (likes / totalLikes) * 2 * Math.PI;
+            
+            // Draw slice
+            ctx.fillStyle = teamColors[team];
+            ctx.beginPath();
+            ctx.moveTo(150, 150);
+            ctx.arc(150, 150, 140, currentAngle, currentAngle + sliceAngle);
+            ctx.closePath();
+            ctx.fill();
+            
+            // Add white border between slices
+            ctx.strokeStyle = "#1e293b";
+            ctx.lineWidth = 3;
+            ctx.stroke();
+
+            // Add to legend
+            const legendItem = document.createElement("div");
+            legendItem.className = "legend-item";
+            legendItem.innerHTML = `<div class="legend-color" style="background: ${teamColors[team]}"></div> ${team}: <strong>${likes}</strong> (${Math.round((likes/totalLikes)*100)}%)`;
+            legend.appendChild(legendItem);
+
+            currentAngle += sliceAngle;
+        }
+    }
+}
+
+// Initialize empty pie chart
+updatePieChart();
+
+// ================= HEATMAP SYSTEM =================
+document.getElementById("toggleHeatmapBtn").addEventListener("click", toggleHeatmap);
+
+function toggleHeatmap() {
+    const canvas = document.getElementById("heatmapOverlay");
+    const hint = document.getElementById("heatmapHint");
+    
+    if (isHeatmapActive) {
+        canvas.style.display = "none";
+        hint.style.display = "none";
+        isHeatmapActive = false;
+        registerInteraction("🔥 Heatmap overlay deactivated.");
+    } else {
+        canvas.style.display = "block";
+        hint.style.display = "block";
+        isHeatmapActive = true;
+        drawHeatmap(canvas);
+        registerInteraction("🔥 Heatmap overlay activated! Showing click density.");
+        confetti({ particleCount: 80, spread: 60, origin: { y: 0.6 }, colors: ['#ef4444', '#f97316', '#fbbf24'] });
+    }
+}
+
+function drawHeatmap(canvas) {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    const ctx = canvas.getContext("2d");
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    clickCoordinates.forEach(point => {
+        const gradient = ctx.createRadialGradient(point.x, point.y, 0, point.x, point.y, 60);
+        gradient.addColorStop(0, "rgba(239, 68, 68, 0.7)");   // Hot Red center
+        gradient.addColorStop(0.4, "rgba(249, 115, 22, 0.4)"); // Warm Orange
+        gradient.addColorStop(1, "rgba(251, 191, 36, 0)");     // Fade to transparent
+
+        ctx.fillStyle = gradient;
+        ctx.beginPath();
+        ctx.arc(point.x, point.y, 60, 0, Math.PI * 2);
+        ctx.fill();
+    });
+}
+
+window.addEventListener("resize", () => {
+    if (isHeatmapActive) drawHeatmap(document.getElementById("heatmapOverlay"));
+});
+
+// ================= RESET TRACKER =================
+document.getElementById("resetTrackerBtn").addEventListener("click", function() {
+    totalClicks = 0;
+    clickedElementsCount = {};
+    clickCoordinates = [];
+    startTime = Date.now();
+    hasInteracted = false;
+    pageViews = { home: 1, details: 0, tracker: 0 };
+    teamLikes = { 'Pakistan': 0, 'India': 0, 'Australia': 0, 'England': 0, 'New Zealand': 0, 'South Africa': 0, 'Sri Lanka': 0, 'Bangladesh': 0 };
+
+    document.getElementById("totalClicks").textContent = "0";
+    document.getElementById("topElement").textContent = "None";
+    document.getElementById("bounceRate").textContent = "100%";
+    document.getElementById("bounceRate").className = "tracker-value danger-value";
+    document.getElementById("usabilityScore").textContent = "50/100";
+    document.getElementById("usabilityScore").style.color = "#ef4444";
+    
+    updatePageViewsDisplay();
+    
+    // Reset like buttons UI
+    document.querySelectorAll('.like-btn').forEach(btn => {
+        btn.classList.remove('liked');
+        btn.querySelector('.like-count').textContent = "0";
+    });
+
+    document.getElementById("activityLog").innerHTML = `<div class="activity-item">🔄 Session reset. Tracker initialized.</div>`;
+    updatePieChart();
+    
+    if (isHeatmapActive) toggleHeatmap();
+    registerInteraction("↻ Tracker data reset successfully.");
+});
+</script>
+</body>
+</html>
